@@ -1,0 +1,4 @@
+# unsigned PyInstaller build (blocked by Smart App Control, 19 MB)
+*.exe
+__pycache__/
+~$*

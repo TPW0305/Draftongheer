@@ -12,7 +12,8 @@ import sys
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
 
-APP_DIR = os.path.dirname(os.path.abspath(__file__))
+# โฟลเดอร์ของโปรแกรม: ถ้าเป็น .exe ใช้โฟลเดอร์ที่ .exe อยู่ (json / DATA วางข้างกัน)
+APP_DIR = os.path.dirname(sys.executable if getattr(sys, "frozen", False) else os.path.abspath(__file__))
 CFG_PATH = os.path.join(APP_DIR, "tongheer_map.json")
 DATA_PATH = os.path.join(APP_DIR, "DATA_TONGHEER.xlsx")  # product master จาก ECS (ไม่มีก็ใช้งานได้)
 
