@@ -34,6 +34,9 @@ class App(ctk.CTk):
         self.geometry("1180x800")
         self.minsize(1100, 680)
         self.configure(fg_color=BG)
+        ico = os.path.join(core.APP_DIR, "app.ico")
+        if os.path.exists(ico):  # customtkinter ตั้งไอคอนของตัวเองหลังเปิด 200ms จึงตั้งทับทีหลัง
+            self.after(300, lambda: self.iconbitmap(ico))
         self.cfg = core.load_config()
         self.rep = None
         self.rows = []       # [(item, partno_var, sub_var, combo, sub_entry, state)]
