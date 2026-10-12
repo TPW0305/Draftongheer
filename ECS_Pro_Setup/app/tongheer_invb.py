@@ -1,4 +1,4 @@
-"""แปลง Export Summary Report (xlsx) ของ TONG HEER FASTENERS (THAILAND) เป็น INVB_*.xlsx สำหรับนำเข้า ECS
+"""ECS Pro - แปลง Export Summary Report (xlsx) ของ TONG HEER FASTENERS (THAILAND) เป็น INVB_*.xlsx สำหรับนำเข้า ECS
 
 ไฟล์นี้คือส่วนคำนวณ (อ่านรายงาน / ใส่กฎ / เขียนไฟล์) ส่วนหน้าจออยู่ใน tongheer_app.pyw
 ใช้แบบคำสั่งได้:  python tongheer_invb.py "รายงาน.xlsx" [ไฟล์ผลลัพธ์.xlsx] [--price]
@@ -52,6 +52,11 @@ DEFAULT_CFG = {
         {"mark": "BBI", "code": "TONG WIN"},
         {"mark": "FASTCO", "code": "FASTENAL"},
         {"mark": "S.S.C", "code": "STAR"},
+    ],
+    # ลูกค้าที่ใช้ MARK1 ตามชื่อลูกค้า (ไม่ใช้ Marking ท้ายรายงาน)
+    "customer_marks": [
+        {"customer": "LAWSON PRODUCTS,INC", "mark": "LAWSON"},
+        {"customer": "HARDWARE SPECIALTY CO.,INC.", "mark": "HARDWARE"},
     ],
     "partnos": [
         _PN("1THA", "304 HEX (AM)", ok=False), _PN("1THA", "316 HE(AM)", ok=False),
@@ -112,7 +117,11 @@ def load_config():
     if not os.path.exists(CFG_PATH):
         save_config(DEFAULT_CFG)
     with open(CFG_PATH, encoding="utf-8-sig") as f:
-        return json.load(f)
+        cfg = json.load(f)
+    if "customer_marks" not in cfg:  # json จากเวอร์ชันก่อน ECS Pro ยังไม่มีกฎ mark ตามลูกค้า
+        cfg["customer_marks"] = [dict(c) for c in DEFAULT_CFG["customer_marks"]]
+        save_config(cfg)
+    return cfg
 
 
 def save_config(cfg):
@@ -123,6 +132,12 @@ def save_config(cfg):
 def find_consignee(cfg, mark):
     k = norm(mark)
     return next((c["code"] for c in cfg["consignees"] if norm(c["mark"]) == k), "")
+
+
+def find_customer_mark(cfg, customer):
+    """MARK1 ที่กำหนดตามชื่อลูกค้า (เทียบเฉพาะตัวอักษร/ตัวเลข ไม่สนจุด จุลภาค ช่องว่าง) หรือ "" ถ้าไม่มีกฎ"""
+    k = key_of(customer)
+    return next((c["mark"] for c in cfg.get("customer_marks", []) if k and key_of(c["customer"]) == k), "")
 
 
 def find_product(cfg, prefix, name, model):
@@ -364,8 +379,6 @@ def parse_report(path):
     if rep.pallets is None:
         warn.append("ไม่พบ Total Pallet - กรอก NUMPKG เอง")
     rep.marking = str(cells.get(right(find(lambda k: k == "MARKING")), "")).strip()
-    if not rep.marking:
-        warn.append("ไม่พบ Marking ท้ายรายงาน - กรอก MARK1 เอง")
     rep.customer = str(cells.get(right(find(lambda k: k == "CUSTOMER")), "")).strip()
     return rep
 
@@ -391,6 +404,13 @@ def resolve(rep, cfg, data=None):
             rep.branch, rep.boi = pf["branch"], pf["boi"]
         else:
             warn.append(f"ไม่รู้จัก prefix {rep.prefix} (ไม่มี EXP_BRANCH / BOI)")
+    cust_mark = find_customer_mark(cfg, rep.customer)
+    if cust_mark:
+        if rep.marking and norm(rep.marking) != norm(cust_mark):
+            warn.append(f'ลูกค้า "{rep.customer}" ใช้ MARK1 "{cust_mark}" ตามกฎลูกค้า (แทน Marking ในรายงาน "{rep.marking}")')
+        rep.marking = cust_mark
+    elif not rep.marking:
+        warn.append("ไม่พบ Marking ท้ายรายงาน - กรอก MARK1 เอง")
     rep.consignee = find_consignee(cfg, rep.marking)
     if rep.marking and not rep.consignee:
         warn.append(f'Marking "{rep.marking}" ยังไม่เคยกำหนด CONSIGNEE - กรอกรหัสตาม ECS (โปรแกรมจะจำไว้)')
