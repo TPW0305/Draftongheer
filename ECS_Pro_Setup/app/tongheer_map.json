@@ -1,0 +1,292 @@
+{
+  "constants": {
+    "taxno": "0205547018706",
+    "incoterm": "FOB",
+    "brand": "\"NO BRAND\"",
+    "tariff": "000073181590",
+    "se": "50001",
+    "statistic": "000",
+    "privilege": "003",
+    "importtarrif": "9PART3",
+    "unit": "KGM",
+    "currency": "USD",
+    "pkgunit": "PX",
+    "productyear": 2026,
+    "origin": "TH",
+    "partnamet": "สกรูทำด้วยสเตนเลส",
+    "pdtgroup": "02",
+    "permit1": "BOI0205547018706|0994000740964|05/10/2026",
+    "itemsep": "N"
+  },
+  "prefixes": [
+    {
+      "prefix": "1THA",
+      "branch": "0000",
+      "boi": "1366(2)/2548"
+    },
+    {
+      "prefix": "2THA",
+      "branch": "0001",
+      "boi": "66-1786-2-04-1-0"
+    },
+    {
+      "prefix": "3THA",
+      "branch": "0001",
+      "boi": "61-1365-1-00-0-0"
+    }
+  ],
+  "consignees": [
+    {
+      "mark": "WURTH INDUSTRY USA (REVCAR FASTENERS)",
+      "code": "WURTH RE"
+    },
+    {
+      "mark": "BBI",
+      "code": "TONG WIN"
+    },
+    {
+      "mark": "FASTCO",
+      "code": "FASTENAL"
+    },
+    {
+      "mark": "S.S.C",
+      "code": "STAR"
+    }
+  ],
+  "partnos": [
+    {
+      "prefix": "1THA",
+      "partno": "304 HEX (AM)",
+      "subgroup": "304 HEX (AM)",
+      "subConfirmed": false
+    },
+    {
+      "prefix": "1THA",
+      "partno": "316 HE(AM)",
+      "subgroup": "316 HE(AM)",
+      "subConfirmed": false
+    },
+    {
+      "prefix": "1THA",
+      "partno": "304 HEX LAG A2  (AM)",
+      "subgroup": "304 HEX LAG A2",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "1THA",
+      "partno": "304 DIN 931(AM)",
+      "subgroup": "304 DIN 931(AM)",
+      "subConfirmed": false
+    },
+    {
+      "prefix": "1THA",
+      "partno": "316 DIN 931(AM)",
+      "subgroup": "316 DIN 931",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "1THA",
+      "partno": "304 DIN 933 (AM)",
+      "subgroup": "304 DIN 933 (AM)",
+      "subConfirmed": false
+    },
+    {
+      "prefix": "1THA",
+      "partno": "DIN 912 SOCKET 316(AM)",
+      "subgroup": "DIN 912 SOCKET 316(AM)",
+      "subConfirmed": false
+    },
+    {
+      "prefix": "1THA",
+      "partno": "DIN 912 SOCKET304 (AM)",
+      "subgroup": "DIN 912 SOCKET304 (AM)",
+      "subConfirmed": false
+    },
+    {
+      "prefix": "1THA",
+      "partno": "933 DIN316 (AM)",
+      "subgroup": "933 DIN316 (AM)",
+      "subConfirmed": false
+    },
+    {
+      "prefix": "2THA",
+      "partno": "304 SOCKET(PT)",
+      "subgroup": "304 SOCKET(PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "316 SOCKET(PT)",
+      "subgroup": "316 SOCKET(PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "304 BUTTON SOCKET(PT)",
+      "subgroup": "304 BUTTON SOCKET(PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "316 BUTTON SOCKET(PT)",
+      "subgroup": "316 BUTTON SOCKET(PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "304  SOCKET FLAT (PT)",
+      "subgroup": "304 SOCKET FLAT(PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "316  SOCKET FLAT (PT)",
+      "subgroup": "316 SOCKET FLAT(PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "304 HEX CAR  (PT)",
+      "subgroup": "304 HEX CAR(PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "316 HEX CAR  (PT)",
+      "subgroup": "316 HEX CAR(PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "304 HEX (PT)",
+      "subgroup": "304 HEX (PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "316 HE(PT)",
+      "subgroup": "316 HE(PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "304 DIN 933 (PT)",
+      "subgroup": "304 DIN 933 (PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "304 HEX FLANGE (PT)",
+      "subgroup": "304 HEX FLANGE (PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "316 (BOLT PT)",
+      "subgroup": "316 (BOLT PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "304 THREA(PT)",
+      "subgroup": "304 THREA(PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "3THA",
+      "partno": "304 HEX (PT3)",
+      "subgroup": "304 HEX (PT3)",
+      "subConfirmed": false
+    }
+  ],
+  "products": [
+    {
+      "prefix": "2THA",
+      "name": "HEX. SOCKET SCREWS STAINLESS STEEL 304",
+      "model": "HEX SOCKET 304",
+      "partno": "304 SOCKET(PT)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "HEX. SOCKET SCREWS STAINLESS STEEL 316",
+      "model": "HEX SOCKET 316",
+      "partno": "316 SOCKET(PT)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "HEX. BUTTON SOCKET SCREWS STAINLESS STEEL 304",
+      "model": "HEX. BUTTON 304",
+      "partno": "304 BUTTON SOCKET(PT)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "HEX. CARRIAGE BOLTS STAINLESS STEEL 316",
+      "model": "HEX CARRIAGE 316",
+      "partno": "316 HEX CAR  (PT)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "HEX BOLTS ( NO WASHER FACE ) STAINLESS STEEL 316",
+      "model": "HEX BOLTS 316",
+      "partno": "316 (BOLT PT)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "HEX CAP SCREWS STAINLESS STEEL 304",
+      "model": "HEX CAP 304",
+      "partno": "304 HEX (PT)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "HEX CAP SCREWS STAINLESS STEEL 316",
+      "model": "HEX CAP 316",
+      "partno": "316 HE(PT)"
+    },
+    {
+      "prefix": "1THA",
+      "name": "HEX CAP SCREWS STAINLESS STEEL 304",
+      "model": "HEX CAP 304",
+      "partno": "304 HEX (AM)"
+    },
+    {
+      "prefix": "1THA",
+      "name": "HEX HEAD LAG SCREW STAINLESS STEEL A2",
+      "model": "HEX LAG A2",
+      "partno": "304 HEX LAG A2  (AM)"
+    },
+    {
+      "prefix": "1THA",
+      "name": "DIN 912 HEX SOCKET SCREWS STAINLESS STEEL A2",
+      "model": "DIN 912 A2",
+      "partno": "DIN 912 SOCKET304 (AM)"
+    },
+    {
+      "prefix": "1THA",
+      "name": "DIN 931 HEX HEAD SCREW WITH SHANK STAINLESS STEEL A2",
+      "model": "DIN 931 A2",
+      "partno": "304 DIN 931(AM)"
+    },
+    {
+      "prefix": "1THA",
+      "name": "DIN 933 HEX HEAD CAP SCREWS STAINLESS STEEL A2",
+      "model": "DIN 933 A2",
+      "partno": "304 DIN 933 (AM)"
+    },
+    {
+      "prefix": "1THA",
+      "name": "DIN 933 HEX HEAD CAP SCREWS STAINLESS STEEL A4",
+      "model": "DIN 933 A4",
+      "partno": "933 DIN316 (AM)"
+    }
+  ],
+  "customer_marks": [
+    {
+      "customer": "LAWSON PRODUCTS,INC",
+      "mark": "LAWSON"
+    },
+    {
+      "customer": "HARDWARE SPECIALTY CO.,INC.",
+      "mark": "HARDWARE"
+    }
+  ]
+}

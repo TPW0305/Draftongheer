@@ -1,5 +1,6 @@
-"""Tong Heer INVB Converter - หน้าจอโปรแกรม (ดับเบิลคลิกไฟล์นี้เพื่อเปิด)"""
+"""ECS Pro - หน้าจอโปรแกรม (ดับเบิลคลิกไฟล์นี้เพื่อเปิด)"""
 import os
+import subprocess
 import sys
 import traceback
 from tkinter import messagebox, filedialog
@@ -13,7 +14,7 @@ try:
 except Exception:  # ไม่มี tkinterdnd2 ก็ยังใช้ปุ่มเลือกไฟล์ได้
     TkinterDnD = None
 
-FONT = "Leelawadee UI"
+FONT = "Thonburi" if sys.platform == "darwin" else "Leelawadee UI"
 BLUE, BLUE_H = "#1f6feb", "#1a5fd0"
 GREEN, GREEN_H = "#1a7f37", "#166c2f"
 BG, CARD, LINE = "#f3f5f8", "#ffffff", "#d8dee6"
@@ -30,12 +31,12 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         ctk.set_appearance_mode("light")
-        self.title("Tong Heer - แปลง Export Summary Report เป็น INVB (ECS)")
+        self.title("ECS Pro - แปลง Export Summary Report เป็น INVB (ECS)")
         self.geometry("1180x800")
         self.minsize(1100, 680)
         self.configure(fg_color=BG)
         ico = os.path.join(core.APP_DIR, "app.ico")
-        if os.path.exists(ico):  # customtkinter ตั้งไอคอนของตัวเองหลังเปิด 200ms จึงตั้งทับทีหลัง
+        if os.path.exists(ico) and sys.platform == "win32":  # customtkinter ตั้งไอคอนของตัวเองหลังเปิด 200ms จึงตั้งทับทีหลัง
             self.after(300, lambda: self.iconbitmap(ico))
         self.cfg = core.load_config()
         self.rep = None
@@ -289,13 +290,20 @@ class App(ctk.CTk):
         self.btn_folder.grid(row=0, column=3, padx=(8, 0))
         return out
 
+    @staticmethod
+    def _open_path(path):
+        if sys.platform == "win32":
+            os.startfile(path)
+        else:  # Mac ใช้ open, Linux ใช้ xdg-open
+            subprocess.Popen(["open" if sys.platform == "darwin" else "xdg-open", path])
+
     def _open_file(self):
         if self.last_out:
-            os.startfile(self.last_out)
+            self._open_path(self.last_out)
 
     def _open_folder(self):
         if self.last_out:
-            os.startfile(os.path.dirname(self.last_out))
+            self._open_path(os.path.dirname(self.last_out))
 
     def report_callback_exception(self, exc, val, tb):
         messagebox.showerror("ผิดพลาด", "".join(traceback.format_exception_only(exc, val)))

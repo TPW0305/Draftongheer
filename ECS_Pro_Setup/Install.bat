@@ -1,19 +1,20 @@
 @echo off
 chcp 65001 >nul
 setlocal
-title ติดตั้ง Tong Heer INVB
+title ติดตั้ง ECS Pro
 set "SRC=%~dp0app"
+rem ใช้โฟลเดอร์เดิมของ Tong Heer INVB เพื่อให้ค่าที่โปรแกรมจำไว้ (tongheer_map.json) ยังอยู่
 set "APPDIR=%LOCALAPPDATA%\TongHeerINVB"
 set "PYDIR=%LOCALAPPDATA%\Programs\Python\Python312"
 set "PY=%PYDIR%\python.exe"
 set "PYW=%PYDIR%\pythonw.exe"
 
 echo ============================================
-echo   ติดตั้งโปรแกรม Tong Heer INVB
+echo   ติดตั้งโปรแกรม ECS Pro
 echo ============================================
 echo.
 if not exist "%SRC%\tongheer_app.pyw" (
-  echo [ผิดพลาด] ไม่พบโฟลเดอร์ app ข้างไฟล์ติดตั้ง - ต้องคัดลอกมาทั้งโฟลเดอร์ TongHeer_INVB_Setup
+  echo [ผิดพลาด] ไม่พบโฟลเดอร์ app ข้างไฟล์ติดตั้ง - ต้องคัดลอกมาทั้งโฟลเดอร์ ECS_Pro_Setup
   goto :fail
 )
 
@@ -48,21 +49,21 @@ if exist "%SRC%\DATA_TONGHEER.xlsx" copy /y "%SRC%\DATA_TONGHEER.xlsx" "%APPDIR%
 rem ไม่เขียนทับค่าที่โปรแกรมจำไว้ ถ้าเคยติดตั้งแล้ว
 if not exist "%APPDIR%\tongheer_map.json" if exist "%SRC%\tongheer_map.json" copy /y "%SRC%\tongheer_map.json" "%APPDIR%\" >nul
 
-echo [4/4] สร้างไอคอนบน Desktop และ Start Menu ...
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$q=[char]34; $w=New-Object -ComObject WScript.Shell; foreach($f in @([Environment]::GetFolderPath('Desktop'),[Environment]::GetFolderPath('Programs'))){ $s=$w.CreateShortcut((Join-Path $f 'Tong Heer INVB.lnk')); $s.TargetPath=$env:PYW; $s.Arguments=$q+$env:APPDIR+'\tongheer_app.pyw'+$q; $s.WorkingDirectory=$env:APPDIR; $s.IconLocation=$env:APPDIR+'\app.ico'; $s.Description='Tong Heer INVB Converter'; $s.Save() }"
+echo [4/4] สร้างไอคอน "ECS Pro" บน Desktop และ Start Menu (ลบไอคอน "Tong Heer INVB" เดิม) ...
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$q=[char]34; $w=New-Object -ComObject WScript.Shell; foreach($f in @([Environment]::GetFolderPath('Desktop'),[Environment]::GetFolderPath('Programs'))){ $old=Join-Path $f 'Tong Heer INVB.lnk'; if(Test-Path -LiteralPath $old){ Remove-Item -LiteralPath $old -Force }; $s=$w.CreateShortcut((Join-Path $f 'ECS Pro.lnk')); $s.TargetPath=$env:PYW; $s.Arguments=$q+$env:APPDIR+'\tongheer_app.pyw'+$q; $s.WorkingDirectory=$env:APPDIR; $s.IconLocation=$env:APPDIR+'\app.ico'; $s.Description='ECS Pro'; $s.Save() }"
 if errorlevel 1 (
   echo [ผิดพลาด] สร้างไอคอนไม่สำเร็จ - เปิดโปรแกรมได้จาก %APPDIR%\tongheer_app.pyw
   goto :fail
 )
 
 echo.
-echo ติดตั้งเสร็จแล้ว - เปิดโปรแกรมจากไอคอน "Tong Heer INVB" บน Desktop
+echo ติดตั้งเสร็จแล้ว - เปิดโปรแกรมจากไอคอน "ECS Pro" บน Desktop
 echo.
-pause
+if /i not "%~1"=="/nopause" pause
 exit /b 0
 
 :fail
 echo.
 echo ติดตั้งไม่สำเร็จ
-pause
+if /i not "%~1"=="/nopause" pause
 exit /b 1
