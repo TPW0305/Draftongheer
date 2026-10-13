@@ -1,4 +1,6 @@
 """ECS Pro - หน้าจอโปรแกรม (ดับเบิลคลิกไฟล์นี้เพื่อเปิด)"""
+import calendar
+import datetime as dt
 import os
 import subprocess
 import sys
@@ -25,6 +27,65 @@ MUTED = "#57606a"
 # (หัวคอลัมน์, ความกว้าง px, ชิด)
 COLS = [("#", 34, "center"), ("ชื่อสินค้า / MODEL", 300, "w"), ("Net (KGM)", 90, "e"), ("Gross (KGM)", 90, "e"),
         ("Amount (USD)", 100, "e"), ("PARTNO", 220, "w"), ("SUBGROUP", 180, "w")]
+
+
+MONTHS = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+          "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"]
+
+
+class DatePicker(ctk.CTkToplevel):
+    """ปฏิทินเล็ก ๆ เลือกวันที่ แล้วเรียก on_pick(date)"""
+
+    def __init__(self, master, start, on_pick):
+        super().__init__(master)
+        self.title("เลือกวันที่")
+        self.resizable(False, False)
+        self.configure(fg_color=CARD)
+        self.on_pick = on_pick
+        self.today = dt.date.today()
+        self.sel = start
+        self.year, self.month = start.year, start.month
+        self.transient(master)
+        self.after(150, self.grab_set)
+        self._draw()
+
+    def _shift(self, delta):
+        m = self.month - 1 + delta
+        self.year, self.month = self.year + m // 12, m % 12 + 1
+        self._draw()
+
+    def _pick(self, d):
+        self.on_pick(d)
+        self.destroy()
+
+    def _draw(self):
+        for w in self.winfo_children():
+            w.destroy()
+        f = lambda s=13, w="normal": ctk.CTkFont(FONT, s, w)  # noqa: E731
+        nav = ctk.CTkFrame(self, fg_color="transparent")
+        nav.grid(row=0, column=0, padx=10, pady=(10, 4), sticky="ew")
+        nav.grid_columnconfigure(1, weight=1)
+        ctk.CTkButton(nav, text="◀", width=34, height=30, fg_color="#e7ebf0", hover_color="#d8dee6", text_color="#24292f",
+                      command=lambda: self._shift(-1)).grid(row=0, column=0)
+        ctk.CTkLabel(nav, text=f"{MONTHS[self.month - 1]} {self.year}", font=f(14, "bold")).grid(row=0, column=1)
+        ctk.CTkButton(nav, text="▶", width=34, height=30, fg_color="#e7ebf0", hover_color="#d8dee6", text_color="#24292f",
+                      command=lambda: self._shift(1)).grid(row=0, column=2)
+        grid = ctk.CTkFrame(self, fg_color="transparent")
+        grid.grid(row=1, column=0, padx=10)
+        for c, name in enumerate(["จ", "อ", "พ", "พฤ", "ศ", "ส", "อา"]):
+            ctk.CTkLabel(grid, text=name, width=38, font=f(12, "bold"), text_color=MUTED).grid(row=0, column=c)
+        for r, week in enumerate(calendar.Calendar(0).monthdayscalendar(self.year, self.month), 1):
+            for c, day in enumerate(week):
+                if not day:
+                    continue
+                d = dt.date(self.year, self.month, day)
+                is_sel, is_today = d == self.sel, d == self.today
+                ctk.CTkButton(grid, text=str(day), width=38, height=30, font=f(13),
+                              fg_color=BLUE if is_sel else CARD, hover_color=BLUE_H if is_sel else "#e7ebf0",
+                              text_color="#ffffff" if is_sel else "#24292f", border_width=1 if is_today else 0,
+                              border_color=BLUE, command=lambda d=d: self._pick(d)).grid(row=r, column=c, padx=1, pady=1)
+        ctk.CTkButton(self, text="วันนี้", height=30, fg_color="#e7ebf0", hover_color="#d8dee6", text_color="#24292f",
+                      font=f(13), command=lambda: self._pick(self.today)).grid(row=2, column=0, padx=10, pady=10, sticky="ew")
 
 
 class App(ctk.CTk):
@@ -88,6 +149,16 @@ class App(ctk.CTk):
             e.grid(row=2, column=c, sticky="w", padx=(14, 0), pady=(0, 12))
             var.trace_add("write", lambda *_: self._paint())
             self.entries.append((e, var))
+        # วันที่ออก Permit (ส่วนที่ 3 ของ PERMIT1: Issue Date) - ว่าง = ใช้วันที่ปัจจุบัน
+        self.v_permit = ctk.StringVar()
+        ctk.CTkLabel(head, text="Permit Issue Date (ว่าง = ใช้วันที่ปัจจุบัน)", font=self.f(12), text_color=MUTED).grid(
+            row=3, column=0, sticky="w", padx=(14, 0))
+        prow = ctk.CTkFrame(head, fg_color="transparent")
+        prow.grid(row=4, column=0, sticky="w", padx=(14, 0), pady=(0, 12))
+        ctk.CTkEntry(prow, textvariable=self.v_permit, width=160, height=34, font=self.f(14), border_color=LINE,
+                     placeholder_text="วว/ดด/ปปปป").grid(row=0, column=0)
+        ctk.CTkButton(prow, text="📅", width=44, height=34, fg_color="#e7ebf0", hover_color="#d8dee6", text_color="#24292f",
+                      command=self._pick_permit_date).grid(row=0, column=1, padx=(6, 0))
 
         # รายการสินค้า
         mid = self._card(self, row=2, column=0, pady=6)
@@ -115,8 +186,8 @@ class App(ctk.CTk):
         bot = ctk.CTkFrame(self, fg_color="transparent")
         bot.grid(row=4, column=0, sticky="ew", padx=16, pady=(6, 14))
         bot.grid_columnconfigure(1, weight=1)
-        self.v_price = ctk.BooleanVar(value=False)
-        ctk.CTkCheckBox(bot, text="เพิ่มคอลัมน์ PRICE (ใช้ทดสอบปัญหาราคาต่อหน่วยใน ECS)", variable=self.v_price,
+        self.v_price = ctk.BooleanVar(value=True)
+        ctk.CTkCheckBox(bot, text="ใส่ราคาต่อหน่วย (PRICE) ให้ ECS คิดยอดแต่ละรายการถูกต้อง", variable=self.v_price,
                         font=self.f(13), checkbox_width=20, checkbox_height=20).grid(row=0, column=0, sticky="w")
         self.lbl_status = ctk.CTkLabel(bot, text="", font=self.f(13, "bold"), text_color=OK_FG, anchor="e")
         self.lbl_status.grid(row=0, column=1, sticky="e", padx=10)
@@ -239,6 +310,10 @@ class App(ctk.CTk):
             combo.configure(fg_color=MISSING if miss else CARD)
             sub.configure(fg_color=MISSING if miss and not sv.get().strip() else CARD)
 
+    def _pick_permit_date(self):
+        start = core.parse_date_text(self.v_permit.get()) or dt.date.today()
+        DatePicker(self, start, lambda d: self.v_permit.set(core.date_text(d)))
+
     # ---------- สร้างไฟล์ ----------
     def generate(self, out_override=None):
         rep = self.rep
@@ -257,6 +332,9 @@ class App(ctk.CTk):
             err.append("ยังไม่ได้กรอก CONSIGNEE (รหัสตาม ECS)")
         if not self.v_pkg.get().strip().isdigit():
             err.append("จำนวนพาเลท (NUMPKG) ต้องเป็นจำนวนเต็ม")
+        permit_date = core.parse_date_text(self.v_permit.get()) if self.v_permit.get().strip() else None
+        if self.v_permit.get().strip() and not permit_date:
+            err.append("Permit Issue Date ต้องเป็นรูปแบบ วว/ดด/ปปปป (ปี ค.ศ.) หรือเว้นว่างเพื่อใช้วันที่ปัจจุบัน")
         if not rep.branch:
             err.append(f'ไม่รู้จัก prefix อินวอย "{rep.prefix}" (ต้องเป็น 1THA / 2THA / 3THA)')
         for n, (it, pv, sv, *_w) in enumerate(self.rows, 1):
@@ -274,7 +352,7 @@ class App(ctk.CTk):
             if not messagebox.askyesno("ยืนยัน", f"มีไฟล์ {os.path.basename(out)} อยู่แล้ว\nต้องการเขียนทับหรือไม่?"):
                 return None
         try:
-            core.write_invb(rep, self.cfg, out, inv_no, date, mark, cons, int(self.v_pkg.get()), self.v_price.get())
+            core.write_invb(rep, self.cfg, out, inv_no, date, mark, cons, int(self.v_pkg.get()), self.v_price.get(), permit_date)
         except PermissionError:
             messagebox.showerror("เขียนไฟล์ไม่ได้", f"ไฟล์ {os.path.basename(out)} เปิดค้างอยู่ใน Excel\nปิดไฟล์ก่อนแล้วกดสร้างอีกครั้ง")
             return None

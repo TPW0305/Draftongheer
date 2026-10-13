@@ -51,6 +51,22 @@
     {
       "mark": "S.S.C",
       "code": "STAR"
+    },
+    {
+      "mark": "LAWSON PRODUCTS,INC",
+      "code": "LAWSON"
+    },
+    {
+      "mark": "HARDWARE SPECIALTY",
+      "code": "HARDWARE"
+    },
+    {
+      "mark": "LAWSON",
+      "code": "LAWSON"
+    },
+    {
+      "mark": "HARDWARE",
+      "code": "HARDWARE"
     }
   ],
   "partnos": [
@@ -129,7 +145,7 @@
     {
       "prefix": "2THA",
       "partno": "316 BUTTON SOCKET(PT)",
-      "subgroup": "316 BUTTON SOCKET(PT)",
+      "subgroup": "316 BUTTONSOCKET(PT)",
       "subConfirmed": true
     },
     {
@@ -197,6 +213,24 @@
       "partno": "304 HEX (PT3)",
       "subgroup": "304 HEX (PT3)",
       "subConfirmed": false
+    },
+    {
+      "prefix": "1THA",
+      "partno": "304 BOLTS (AM)",
+      "subgroup": "304 BOLTS (AM)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "304 DIN 975 (PT)",
+      "subgroup": "304 DIN 975",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "316 HEX FLANGE (PT)",
+      "subgroup": "316 HEX FLANGE (PT)",
+      "subConfirmed": true
     }
   ],
   "products": [
@@ -277,6 +311,36 @@
       "name": "DIN 933 HEX HEAD CAP SCREWS STAINLESS STEEL A4",
       "model": "DIN 933 A4",
       "partno": "933 DIN316 (AM)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "HEX. BUTTON SOCKET SCREWS STAINLESS STEEL 316",
+      "model": "HEX. BUTTON 316",
+      "partno": "316 BUTTON SOCKET(PT)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "HEX.SOCKET FLAT COUNTERSUNK SCREW STAINLESS STEEL 316",
+      "model": "HEX. FLAT 316",
+      "partno": "316  SOCKET FLAT (PT)"
+    },
+    {
+      "prefix": "1THA",
+      "name": "HEX BOLTS ( NO WASHER FACE ) STAINLESS STEEL 304",
+      "model": "HEX BOLTS 304",
+      "partno": "304 BOLTS (AM)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "DIN 975 THREADED ROD STAINLESS STEEL A2",
+      "model": "DIN 975 A2",
+      "partno": "304 DIN 975 (PT)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "HEX FLANGE SCREWS WITH SERRATION STAINLESS STEEL 316",
+      "model": "HEX FLANGE 316",
+      "partno": "316 HEX FLANGE (PT)"
     }
   ],
   "customer_marks": [

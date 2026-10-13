@@ -1,7 +1,7 @@
 """ECS Pro - แปลง Export Summary Report (xlsx) ของ TONG HEER FASTENERS (THAILAND) เป็น INVB_*.xlsx สำหรับนำเข้า ECS
 
 ไฟล์นี้คือส่วนคำนวณ (อ่านรายงาน / ใส่กฎ / เขียนไฟล์) ส่วนหน้าจออยู่ใน tongheer_app.pyw
-ใช้แบบคำสั่งได้:  python tongheer_invb.py "รายงาน.xlsx" [ไฟล์ผลลัพธ์.xlsx] [--price]
+ใช้แบบคำสั่งได้:  python tongheer_invb.py "รายงาน.xlsx" [ไฟล์ผลลัพธ์.xlsx] [--no-price]   (ค่าเริ่มต้นใส่คอลัมน์ PRICE)
 """
 import datetime as dt
 import json
@@ -242,10 +242,11 @@ def _as_date(v, month_first=True):
     if m:
         a, b, y = int(m.group(1)), int(m.group(2)), int(m.group(3))
         y += 2000 if y < 100 else 0
-        try:
-            return dt.date(y, a, b) if month_first else dt.date(y, b, a)
-        except ValueError:
-            return None
+        for x, z in ((a, b), (b, a)) if month_first else ((b, a), (a, b)):  # ถ้าอ่านแบบเดือนก่อนไม่ได้ (เช่น 17-10-2026) ลองวันก่อน
+            try:
+                return dt.date(y, x, z)
+            except ValueError:
+                continue
     return None
 
 
@@ -315,6 +316,15 @@ def parse_report(path):
                     rep.date = d
                     break
     etd_cell = right(find(lambda k: k == "ETD"))
+    eta_cell = right(find(lambda k: k == "ETA"))
+    if not rep.date:  # รายงานแบบใหม่: Invoice# อยู่ท้ายรายงาน วันที่อยู่หัวรายงาน (ก่อนตารางสินค้า) ไม่ใช่แถวเดียวกับ Invoice#
+        net_row = (find(lambda k: k == "NETWEIGHT") or (10**6,))[0]
+        for (r, c) in sorted(cells):
+            if r < net_row and (r, c) not in (etd_cell, eta_cell):
+                d = _as_date(cells[(r, c)])
+                if d and not isinstance(cells[(r, c)], str):
+                    rep.date = d
+                    break
     rep.etd = _as_date(cells.get(etd_cell)) if etd_cell else None
     if not rep.date:
         warn.append("ไม่พบวันที่อินวอยในรายงาน - กรอก INV_DATE เอง (dd/mm/yyyy)")
@@ -327,9 +337,13 @@ def parse_report(path):
             d = rep.date
             if d.day <= 12 and d.day != d.month:
                 sw = dt.date(d.year, d.day, d.month)
-                if 0 <= (rep.etd - sw).days <= 60:
-                    msg += f" - อาจสลับวัน/เดือน น่าจะเป็น {date_text(sw)}"
-            warn.append(msg + " (ตรวจและแก้ในช่อง INV_DATE)")
+                if 0 <= (rep.etd - sw).days <= 60:  # สลับแล้วสอดคล้องกับ ETD: แก้ให้เอง แล้วแจ้งผู้ใช้
+                    rep.date = sw
+                    warn.append(f"INV_DATE ในรายงานเป็น {date_text(d)} สลับวัน/เดือน - แก้ให้เป็น {date_text(sw)} "
+                                f"ตาม ETD {date_text(rep.etd)} (ตรวจอีกครั้งในช่อง INV_DATE)")
+                    msg = None
+            if msg:
+                warn.append(msg + " (ตรวจและแก้ในช่อง INV_DATE)")
 
     # --- รายการสินค้า (ตารางส่วนบน ไม่ใช่ตารางสรุปตามอินวอย) ---
     net_h = find(lambda k: k == "NETWEIGHT")
@@ -368,7 +382,9 @@ def parse_report(path):
     # --- ยอดรวม / พาเลท / marking ---
     rep.tot_net = num(right(find(lambda k: k.startswith("TOTALNETWEIGHT"))))
     rep.tot_gross = num(right(find(lambda k: k.startswith("TOTALGROSSWEIGHT"))))
-    if rep.tot_amount is None:  # ไม่มีตารางสรุปตามอินวอย: ใช้แถวผลรวมใต้รายการสุดท้าย
+    if rep.tot_amount is None:  # ไม่มีตารางสรุปตามอินวอย: ใช้ช่อง "Total Amount :" (หรือ FinalAmount) ท้ายรายงาน
+        rep.tot_amount = num(right(find(lambda k: k.startswith("TOTALAMOUNT")))) or num(right(find(lambda k: k.startswith("FINALAMOUNT"))))
+    if rep.tot_amount is None:  # ไม่มีทั้งสองช่อง: ใช้แถวผลรวมใต้รายการสุดท้าย
         for r in range(prev + 1, prev + 4):
             v = num((r, hdr["AMOUNT"]))
             if v is not None:
@@ -395,8 +411,7 @@ def resolve(rep, cfg, data=None):
             warn.append(f"รายงานมี 2 อินวอย ({', '.join(rep.invoices)}) - ใส่ INV_NO เลขแรกเลขเดียว และรวมเป็นไฟล์เดียว")
         elif len(rep.invoices) > 2:
             rep.inv_no = first + "," + ",".join(i[-3:] for i in rep.invoices[1:])
-            warn.append(f"รายงานมี {len(rep.invoices)} อินวอย - ใส่ INV_NO แบบย่อ {rep.inv_no} "
-                        "(ยังสงสัยว่าเลขคั่นจุลภาคทำให้ ECS คิดราคาผิดหรือไม่)")
+            warn.append(f"รายงานมี {len(rep.invoices)} อินวอย - ใส่ INV_NO แบบย่อ {rep.inv_no}")
         if any(i[:4] != rep.prefix for i in rep.invoices):
             warn.append(f"อินวอยในรายงานมี prefix ไม่เหมือนกัน - ใช้กฎของ {rep.prefix} ทั้งไฟล์")
         pf = next((p for p in cfg["prefixes"] if p["prefix"] == rep.prefix), None)
@@ -446,8 +461,16 @@ def subgroup_warnings(rep, cfg):
 
 
 # ---------------- เขียน INVB ----------------
-def write_invb(rep, cfg, out_path, inv_no, inv_date, mark, consignee, pallets, with_price=False):
+def permit1_text(base, issue_date=None):
+    """PERMIT1 = เลขที่|ผู้ออก|วันที่ออก  (ส่วนที่ 3 เปลี่ยนตามที่เลือก ถ้าไม่เลือกใช้วันที่ปัจจุบัน)"""
+    parts = str(base).split("|")
+    parts = (parts + ["", ""])[:2] if len(parts) < 3 else parts[:2]
+    return "|".join(parts + [date_text(issue_date or dt.date.today())])
+
+
+def write_invb(rep, cfg, out_path, inv_no, inv_date, mark, consignee, pallets, with_price=False, permit_date=None):
     k = cfg["constants"]
+    permit1 = permit1_text(k["permit1"], permit_date)
     headers = HEADERS + (["PRICE"] if with_price else [])
     wb = Workbook()
     ws = wb.active
@@ -465,7 +488,7 @@ def write_invb(rep, cfg, out_path, inv_no, inv_date, mark, consignee, pallets, w
             "QUANTITY": it.net, "QUNIT": k["unit"], "TARIFFQTY": it.net, "TARIFFUNITY": k["unit"], "GROSS": it.gross,
             "WEIGHT": it.net, "WEIGHTU": k["unit"], "INVCURR": k["currency"], "AMOUNT": it.amount,
             "NUMPKG": pallets if n == 1 else 0, "UNTPKG": k["pkgunit"], "PRODUCTYEAR": k["productyear"],
-            "RAWCODE": it.rawcode, "BOI": rep.boi, "ORIGIN": k["origin"], "PERMIT1": k["permit1"],
+            "RAWCODE": it.rawcode, "BOI": rep.boi, "ORIGIN": k["origin"], "PERMIT1": permit1,
             "ITEMSEP": k["itemsep"], "SUBGROUP": it.subgroup,
         }
         if with_price:
@@ -539,7 +562,7 @@ def main(argv):
         print("ข้อมูลยังไม่ครบ - เปิดโปรแกรมแบบมีหน้าจอ (tongheer_app.pyw) เพื่อกรอกส่วนที่ขาด")
         return 2
     out = args[1] if len(args) > 1 else out_path_for(rep, rep.inv_no)
-    write_invb(rep, cfg, out, rep.inv_no, rep.date, rep.marking, rep.consignee, rep.pallets, "--price" in argv)
+    write_invb(rep, cfg, out, rep.inv_no, rep.date, rep.marking, rep.consignee, rep.pallets, "--no-price" not in argv)
     print("สร้างไฟล์:", out)
     print(rep.totals_text())
     for w in subgroup_warnings(rep, cfg):
