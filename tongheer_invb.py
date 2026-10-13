@@ -7,10 +7,17 @@ import datetime as dt
 import json
 import os
 import re
+import shutil
 import sys
+import tempfile
+import urllib.request
 
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
+
+VERSION = "1.1.0"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
+# เวอร์ชันล่าสุดอ่านจาก branch main บน GitHub (เครื่องที่ติดตั้งแล้วจะถามอัปเดตเองตอนเปิดโปรแกรม)
+UPDATE_URL = "https://raw.githubusercontent.com/TPW0305/Draftongheer/main/"
 
 # โฟลเดอร์ของโปรแกรม: ถ้าเป็น .exe ใช้โฟลเดอร์ที่ .exe อยู่ (json / DATA วางข้างกัน)
 APP_DIR = os.path.dirname(sys.executable if getattr(sys, "frozen", False) else os.path.abspath(__file__))
@@ -540,6 +547,49 @@ def learn(rep, cfg, mark, consignee):
             changed = True
     if changed:
         save_config(cfg)
+
+
+# ---------------- อัปเดตโปรแกรม ----------------
+def _ver(text):
+    return tuple(int(x) for x in re.findall(r"\d+", str(text or ""))[:3])
+
+
+def _fetch(name, timeout):
+    with urllib.request.urlopen(UPDATE_URL + urllib.request.quote(name), timeout=timeout) as r:
+        return r.read()
+
+
+def check_update(timeout=6):
+    """คืน dict ของ version.json บน GitHub ถ้ามีเวอร์ชันใหม่กว่าเครื่องนี้ ไม่งั้นคืน None (ไม่มีเน็ต/อ่านไม่ได้ = None)"""
+    if os.path.exists(os.path.join(APP_DIR, ".git")):  # โฟลเดอร์พัฒนา ไม่อัปเดตทับ
+        return None
+    try:
+        info = json.loads(_fetch("version.json", timeout).decode("utf-8-sig"))
+        return info if _ver(info["version"]) > _ver(VERSION) else None
+    except Exception:
+        return None
+
+
+def apply_update(info, timeout=30):
+    """ดาวน์โหลดไฟล์โปรแกรมเวอร์ชันใหม่มาวางทับ (ไม่แตะ tongheer_map.json ที่จำไว้) ถ้าผิดพลาดจะ raise และไม่เปลี่ยนไฟล์เดิม"""
+    names = [n for n in info["files"] if os.path.basename(n) == n and n != os.path.basename(CFG_PATH)]
+    tmp = tempfile.mkdtemp(prefix="ecspro_update_")
+    try:
+        for n in names:  # ดาวน์โหลดให้ครบและตรวจก่อน แล้วค่อยวางทับ
+            data = _fetch(n, timeout)
+            if n.endswith((".py", ".pyw")):
+                compile(data, n, "exec")
+            with open(os.path.join(tmp, n), "wb") as f:
+                f.write(data)
+        core_name = os.path.basename(__file__)
+        if core_name in names:
+            m = re.search(r'^VERSION = "([^"]+)"', open(os.path.join(tmp, core_name), encoding="utf-8").read(), re.M)
+            if not m or _ver(m.group(1)) != _ver(info["version"]):
+                raise ValueError("ไฟล์ที่ดาวน์โหลดไม่ตรงกับเวอร์ชันที่ประกาศ - ลองใหม่อีกครั้งภายหลัง")
+        for n in names:
+            shutil.copyfile(os.path.join(tmp, n), os.path.join(APP_DIR, n))
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
 
 
 def out_path_for(rep, inv_no):

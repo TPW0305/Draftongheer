@@ -4,6 +4,7 @@ import datetime as dt
 import os
 import subprocess
 import sys
+import threading
 import traceback
 from tkinter import messagebox, filedialog
 
@@ -92,7 +93,7 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         ctk.set_appearance_mode("light")
-        self.title("ECS Pro - แปลง Export Summary Report เป็น INVB (ECS)")
+        self.title(f"ECS Pro {core.VERSION} - แปลง Export Summary Report เป็น INVB (ECS)")
         self.geometry("1180x800")
         self.minsize(1100, 680)
         self.configure(fg_color=BG)
@@ -383,6 +384,37 @@ class App(ctk.CTk):
         if self.last_out:
             self._open_path(os.path.dirname(self.last_out))
 
+    # ---------- อัปเดตโปรแกรม ----------
+    def check_update_async(self):
+        """เช็กเวอร์ชันใหม่จาก GitHub เบื้องหลัง (ไม่มีเน็ตก็เปิดโปรแกรมได้ตามปกติ)"""
+        box = {}
+        threading.Thread(target=lambda: box.update(info=core.check_update()), daemon=True).start()
+
+        def poll(tries=0):
+            if "info" not in box:
+                if tries < 40:
+                    self.after(250, lambda: poll(tries + 1))
+            elif box["info"]:
+                self._offer_update(box["info"])
+        self.after(250, poll)
+
+    def _offer_update(self, info):
+        notes = f"\n\n{info['notes']}" if info.get("notes") else ""
+        if not messagebox.askyesno("มีเวอร์ชันใหม่", f"ECS Pro มีเวอร์ชันใหม่ {info['version']} (เครื่องนี้ {core.VERSION}){notes}\n\n"
+                                                    "ต้องการอัปเดตตอนนี้หรือไม่? (ข้อมูลที่โปรแกรมจำไว้ยังอยู่)"):
+            return
+        try:
+            self.configure(cursor="watch")
+            self.update()
+            core.apply_update(info)
+        except Exception as e:
+            self.configure(cursor="")
+            messagebox.showerror("อัปเดตไม่สำเร็จ", f"{e}\n\nโปรแกรมยังเป็นเวอร์ชันเดิม ใช้งานต่อได้ตามปกติ")
+            return
+        messagebox.showinfo("อัปเดตแล้ว", f"อัปเดตเป็นเวอร์ชัน {info['version']} แล้ว โปรแกรมจะเปิดใหม่")
+        subprocess.Popen([sys.executable, os.path.join(core.APP_DIR, os.path.basename(__file__))])
+        self.destroy()
+
     def report_callback_exception(self, exc, val, tb):
         messagebox.showerror("ผิดพลาด", "".join(traceback.format_exception_only(exc, val)))
 
@@ -407,6 +439,8 @@ if __name__ == "__main__":
     app = App()
     if len(sys.argv) >= 5 and sys.argv[1] == "--selftest":
         app.after(400, lambda: selftest(app, *sys.argv[2:5]))
-    elif len(sys.argv) > 1:
-        app.after(200, lambda: app.load(sys.argv[1]))
+    else:
+        if len(sys.argv) > 1:
+            app.after(200, lambda: app.load(sys.argv[1]))
+        app.after(800, app.check_update_async)
     app.mainloop()
