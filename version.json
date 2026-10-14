@@ -1,5 +1,5 @@
 {
-  "version": "1.1.1",
-  "notes": "INV_NO ใส่เลขเต็มทั้งสองใบเมื่อรายงานมี 2 อินวอย",
+  "version": "1.1.2",
+  "notes": "อ่านวันที่อินวอยที่เก็บเป็นข้อความในหัวรายงานได้ (เช่น 15-10-2026)",
   "files": ["tongheer_invb.py", "tongheer_app.pyw", "DATA_TONGHEER.xlsx", "app.ico"]
 }

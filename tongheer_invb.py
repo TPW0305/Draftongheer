@@ -15,7 +15,7 @@ import urllib.request
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
 
-VERSION = "1.1.1"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
+VERSION = "1.1.2"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
 # เวอร์ชันล่าสุดอ่านจาก branch main บน GitHub (เครื่องที่ติดตั้งแล้วจะถามอัปเดตเองตอนเปิดโปรแกรม)
 UPDATE_URL = "https://raw.githubusercontent.com/TPW0305/Draftongheer/main/"
 
@@ -329,7 +329,8 @@ def parse_report(path):
         for (r, c) in sorted(cells):
             if r < net_row and (r, c) not in (etd_cell, eta_cell):
                 d = _as_date(cells[(r, c)])
-                if d and not isinstance(cells[(r, c)], str):
+                v = cells[(r, c)]  # ข้อความรับเฉพาะที่เป็นวันที่ทั้งช่อง เช่น "15-10-2026" (ไม่หยิบที่อยู่/เลขเอกสาร)
+                if d and (not isinstance(v, str) or re.fullmatch(r"\s*\d{1,2}[-/]\d{1,2}[-/]\d{2,4}(\s+[\d:]+)?\s*", v)):
                     rep.date = d
                     break
     rep.etd = _as_date(cells.get(etd_cell)) if etd_cell else None

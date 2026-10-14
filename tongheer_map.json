@@ -61,12 +61,8 @@
       "code": "HARDWARE"
     },
     {
-      "mark": "LAWSON",
-      "code": "LAWSON"
-    },
-    {
-      "mark": "HARDWARE",
-      "code": "HARDWARE"
+      "mark": "MID-STATES BOLT & SC",
+      "code": "MID-STATES"
     }
   ],
   "partnos": [
@@ -479,16 +475,6 @@
       "name": "HEX FLANGE SCREWS WITH SERRATION STAINLESS STEEL 316",
       "model": "HEX FLANGE 316",
       "partno": "316 HEX FLANGE (PT)"
-    }
-  ],
-  "customer_marks": [
-    {
-      "customer": "LAWSON PRODUCTS,INC",
-      "mark": "LAWSON"
-    },
-    {
-      "customer": "HARDWARE SPECIALTY CO.,INC.",
-      "mark": "HARDWARE"
     }
   ]
 }
