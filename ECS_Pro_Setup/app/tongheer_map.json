@@ -74,13 +74,13 @@
       "prefix": "1THA",
       "partno": "304 HEX (AM)",
       "subgroup": "304 HEX (AM)",
-      "subConfirmed": false
+      "subConfirmed": true
     },
     {
       "prefix": "1THA",
       "partno": "316 HE(AM)",
-      "subgroup": "316 HE(AM)",
-      "subConfirmed": false
+      "subgroup": "316 HE",
+      "subConfirmed": true
     },
     {
       "prefix": "1THA",
@@ -91,8 +91,8 @@
     {
       "prefix": "1THA",
       "partno": "304 DIN 931(AM)",
-      "subgroup": "304 DIN 931(AM)",
-      "subConfirmed": false
+      "subgroup": "304 DIN 931",
+      "subConfirmed": true
     },
     {
       "prefix": "1THA",
@@ -103,26 +103,26 @@
     {
       "prefix": "1THA",
       "partno": "304 DIN 933 (AM)",
-      "subgroup": "304 DIN 933 (AM)",
-      "subConfirmed": false
+      "subgroup": "304 DIN 933",
+      "subConfirmed": true
     },
     {
       "prefix": "1THA",
       "partno": "DIN 912 SOCKET 316(AM)",
-      "subgroup": "DIN 912 SOCKET 316(AM)",
-      "subConfirmed": false
+      "subgroup": "DIN 912 SOCKET(AM)",
+      "subConfirmed": true
     },
     {
       "prefix": "1THA",
       "partno": "DIN 912 SOCKET304 (AM)",
-      "subgroup": "DIN 912 SOCKET304 (AM)",
-      "subConfirmed": false
+      "subgroup": "DIN 912 SOCKET304",
+      "subConfirmed": true
     },
     {
       "prefix": "1THA",
       "partno": "933 DIN316 (AM)",
-      "subgroup": "933 DIN316 (AM)",
-      "subConfirmed": false
+      "subgroup": "931 DIN 316 (AM)",
+      "subConfirmed": true
     },
     {
       "prefix": "2THA",
@@ -133,7 +133,7 @@
     {
       "prefix": "2THA",
       "partno": "316 SOCKET(PT)",
-      "subgroup": "316 SOCKET(PT)",
+      "subgroup": "316 SOCKET (PT)",
       "subConfirmed": true
     },
     {
@@ -187,7 +187,7 @@
     {
       "prefix": "2THA",
       "partno": "304 DIN 933 (PT)",
-      "subgroup": "304 DIN 933 (PT)",
+      "subgroup": "304 DIN 933(PT)",
       "subConfirmed": true
     },
     {
@@ -205,14 +205,56 @@
     {
       "prefix": "2THA",
       "partno": "304 THREA(PT)",
-      "subgroup": "304 THREA(PT)",
+      "subgroup": "304 THERA(PT)",
       "subConfirmed": true
     },
     {
       "prefix": "3THA",
       "partno": "304 HEX (PT3)",
-      "subgroup": "304 HEX (PT3)",
-      "subConfirmed": false
+      "subgroup": "304 HEX (PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "3THA",
+      "partno": "304 BUTTON SOCKET(PT3)",
+      "subgroup": "304 BUTTONSOCKET(PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "3THA",
+      "partno": "304 HEX CAR  (PT3)",
+      "subgroup": "304 HEX CAR(PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "3THA",
+      "partno": "304 SOCKET(PT3)",
+      "subgroup": "304 SOCKET (PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "3THA",
+      "partno": "304  SOCKET FLAT (PT3)",
+      "subgroup": "304 SOCKET FLAT(PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "3THA",
+      "partno": "304 BOLTS (PT3)",
+      "subgroup": "304 BOLTS (PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "304 BOLTS (PT)",
+      "subgroup": "304 BOLTS (PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "316 THREA(PT)",
+      "subgroup": "316 THERA",
+      "subConfirmed": true
     },
     {
       "prefix": "1THA",
@@ -311,6 +353,102 @@
       "name": "DIN 933 HEX HEAD CAP SCREWS STAINLESS STEEL A4",
       "model": "DIN 933 A4",
       "partno": "933 DIN316 (AM)"
+    },
+    {
+      "prefix": "1THA",
+      "name": "HEX CAP SCREWS STAINLESS STEEL 316",
+      "model": "HEX CAP 316",
+      "partno": "316 HE(AM)"
+    },
+    {
+      "prefix": "1THA",
+      "name": "DIN 912 HEX SOCKET SCREWS STAINLESS STEEL A4",
+      "model": "DIN 912 A4",
+      "partno": "DIN 912 SOCKET 316(AM)"
+    },
+    {
+      "prefix": "3THA",
+      "name": "HEX. BUTTON SOCKET SCREWS STAINLESS STEEL 304",
+      "model": "HEX. BUTTON 304",
+      "partno": "304 BUTTON SOCKET(PT3)"
+    },
+    {
+      "prefix": "3THA",
+      "name": "HEX. CARRIAGE BOLTS STAINLESS STEEL 304",
+      "model": "HEX CARRIAGE 304",
+      "partno": "304 HEX CAR  (PT3)"
+    },
+    {
+      "prefix": "3THA",
+      "name": "HEX CAP SCREWS STAINLESS STEEL 304",
+      "model": "HEX CAP 304",
+      "partno": "304 HEX (PT3)"
+    },
+    {
+      "prefix": "3THA",
+      "name": "HEX. SOCKET SCREWS STAINLESS STEEL 304",
+      "model": "HEX SOCKET 304",
+      "partno": "304 SOCKET(PT3)"
+    },
+    {
+      "prefix": "3THA",
+      "name": "HEX.SOCKET FLAT COUNTERSUNK SCREW STAINLESS STEEL 304",
+      "model": "HEX. FLAT 304",
+      "partno": "304  SOCKET FLAT (PT3)"
+    },
+    {
+      "prefix": "3THA",
+      "name": "HEX BOLTS ( NO WASHER FACE ) STAINLESS STEEL 304",
+      "model": "HEX BOLTS 304",
+      "partno": "304 BOLTS (PT3)"
+    },
+    {
+      "prefix": "1THA",
+      "name": "DIN 931 HEX HEAD SCREW WITH SHANK STAINLESS STEEL A4",
+      "model": "DIN 931 A4",
+      "partno": "316 DIN 931(AM)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "HEX BOLTS ( NO WASHER FACE ) STAINLESS STEEL 304",
+      "model": "HEX BOLTS 304",
+      "partno": "304 BOLTS (PT)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "HEX.SOCKET FLAT COUNTERSUNK SCREW STAINLESS STEEL 304",
+      "model": "HEX. FLAT 304",
+      "partno": "304  SOCKET FLAT (PT)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "HEX. CARRIAGE BOLTS STAINLESS STEEL 304",
+      "model": "HEX CARRIAGE 304",
+      "partno": "304 HEX CAR  (PT)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "DIN 933 HEX HEAD CAP SCREWS STAINLESS STEEL A2",
+      "model": "DIN 933 A2",
+      "partno": "304 DIN 933 (PT)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "HEX FLANGE SCREWS WITH SERRATION STAINLESS STEEL 304",
+      "model": "HEX FLANGE 304",
+      "partno": "304 HEX FLANGE (PT)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "THREADED ROD STAINLESS STEEL 304",
+      "model": "IFI 136",
+      "partno": "304 THREA(PT)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "THREADED ROD STAINLESS STEEL 316",
+      "model": "IFI 136",
+      "partno": "316 THREA(PT)"
     },
     {
       "prefix": "2THA",

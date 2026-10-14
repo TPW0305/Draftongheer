@@ -15,7 +15,7 @@ import urllib.request
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
 
-VERSION = "1.1.0"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
+VERSION = "1.1.1"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
 # เวอร์ชันล่าสุดอ่านจาก branch main บน GitHub (เครื่องที่ติดตั้งแล้วจะถามอัปเดตเองตอนเปิดโปรแกรม)
 UPDATE_URL = "https://raw.githubusercontent.com/TPW0305/Draftongheer/main/"
 
@@ -415,7 +415,8 @@ def resolve(rep, cfg, data=None):
         rep.prefix = first[:4]
         rep.inv_no = first
         if len(rep.invoices) == 2:
-            warn.append(f"รายงานมี 2 อินวอย ({', '.join(rep.invoices)}) - ใส่ INV_NO เลขแรกเลขเดียว และรวมเป็นไฟล์เดียว")
+            rep.inv_no = ",".join(rep.invoices)
+            warn.append(f"รายงานมี 2 อินวอย - ใส่ INV_NO เลขเต็มทั้งสองใบ {rep.inv_no} และรวมเป็นไฟล์เดียว")
         elif len(rep.invoices) > 2:
             rep.inv_no = first + "," + ",".join(i[-3:] for i in rep.invoices[1:])
             warn.append(f"รายงานมี {len(rep.invoices)} อินวอย - ใส่ INV_NO แบบย่อ {rep.inv_no}")
