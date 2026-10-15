@@ -15,7 +15,7 @@ import urllib.request
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
 
-VERSION = "1.1.3"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
+VERSION = "1.1.4"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
 # เวอร์ชันล่าสุดอ่านจาก branch main บน GitHub (เครื่องที่ติดตั้งแล้วจะถามอัปเดตเองตอนเปิดโปรแกรม)
 UPDATE_URL = "https://raw.githubusercontent.com/TPW0305/Draftongheer/main/"
 
@@ -190,6 +190,12 @@ def data_candidates(data, boi, name, model_line):
     """รหัสใน DATA ที่ DecDesc1 (ชื่อ + บรรทัด MODEL) และ BOI ตรงกับรายการ"""
     want = norm(f"{name} {model_line}")
     return [code for code, desc, b in data if b == boi and desc == want]
+
+
+def partname2(data, boi, partno, model_line):
+    """บรรทัด MODEL ใส่ PARTNAME2 ยกเว้นรหัสที่ชื่อใน ECS (DecDesc1) ไม่มีบรรทัด MODEL เช่น 304 HEX LAG A2  (PT)"""
+    descs = [desc for code, desc, b in data if code == partno and b == boi]
+    return "" if descs and all("MODEL" not in d for d in descs) else model_line
 
 
 # ---------------- อ่านรายงาน ----------------
@@ -498,11 +504,12 @@ def write_invb(rep, cfg, out_path, inv_no, inv_date, mark, consignee, pallets, w
     f_head, f_body = Font(name="Arial", size=10, bold=True), Font(name="Arial", size=10)
     for c, h in enumerate(headers, 1):
         ws.cell(1, c, h).font = f_head
+    data = load_data()
     for n, it in enumerate(rep.items, 1):
         v = {
             "EXP_TAXNO": k["taxno"], "EXP_BRANCH": rep.branch, "INV_NO": inv_no, "INV_DATE": inv_date,
             "INCOTERM": k["incoterm"], "CONSIGNEE": consignee, "ITEM": n, "PDTGROUP": k["pdtgroup"],
-            "PARTNO": it.partno, "PARTNAME": it.name, "PARTNAME2": it.model_line, "PARTNAMET": k["partnamet"],
+            "PARTNO": it.partno, "PARTNAME": it.name, "PARTNAME2": partname2(data, rep.boi, it.partno, it.model_line), "PARTNAMET": k["partnamet"],
             "BRAND": k["brand"], "MARK1": mark if n == 1 else "-DO-", "TARIFF": k["tariff"], "SE": k["se"],
             "STATISTIC": k["statistic"], "PRIVILEGE": k["privilege"], "IMPORTTARRIF": k["importtarrif"],
             "QUANTITY": it.net, "QUNIT": k["unit"], "TARIFFQTY": it.net, "TARIFFUNITY": k["unit"], "GROSS": it.gross,
