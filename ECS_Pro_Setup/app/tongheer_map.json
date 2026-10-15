@@ -269,6 +269,12 @@
       "partno": "316 HEX FLANGE (PT)",
       "subgroup": "316 HEX FLANGE (PT)",
       "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "304 HEX LAG A2  (PT)",
+      "subgroup": "304 HEX LAG A2",
+      "subConfirmed": true
     }
   ],
   "products": [
@@ -475,6 +481,28 @@
       "name": "HEX FLANGE SCREWS WITH SERRATION STAINLESS STEEL 316",
       "model": "HEX FLANGE 316",
       "partno": "316 HEX FLANGE (PT)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "HEX HEAD LAG SCREWS STAINLESS STEEL A2",
+      "model": "HEX LAG A2",
+      "partno": "304 HEX LAG A2  (PT)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "HEX HEAD LAG SCREW STAINLESS STEEL A2",
+      "model": "HEX LAG A2",
+      "partno": "304 HEX LAG A2  (PT)"
+    }
+  ],
+  "customer_marks": [
+    {
+      "customer": "LAWSON PRODUCTS,INC",
+      "mark": "LAWSON"
+    },
+    {
+      "customer": "HARDWARE SPECIALTY CO.,INC.",
+      "mark": "HARDWARE"
     }
   ]
 }
