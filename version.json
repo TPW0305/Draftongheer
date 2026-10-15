@@ -1,5 +1,5 @@
 {
-  "version": "1.1.2",
-  "notes": "อ่านวันที่อินวอยที่เก็บเป็นข้อความในหัวรายงานได้ (เช่น 15-10-2026)",
+  "version": "1.1.3",
+  "notes": "อ่าน Marking / Customer ที่อยู่ในเซลล์เดียวกับหัวข้อได้ (เช่น \"Marking :WURTH INDUSTRY USA (REVCAR FASTENERS)\")",
   "files": ["tongheer_invb.py", "tongheer_app.pyw", "DATA_TONGHEER.xlsx", "app.ico"]
 }

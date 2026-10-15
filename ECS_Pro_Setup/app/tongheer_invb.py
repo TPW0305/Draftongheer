@@ -15,7 +15,7 @@ import urllib.request
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
 
-VERSION = "1.1.2"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
+VERSION = "1.1.3"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
 # เวอร์ชันล่าสุดอ่านจาก branch main บน GitHub (เครื่องที่ติดตั้งแล้วจะถามอัปเดตเองตอนเปิดโปรแกรม)
 UPDATE_URL = "https://raw.githubusercontent.com/TPW0305/Draftongheer/main/"
 
@@ -283,6 +283,17 @@ def parse_report(path):
         cands = [c for (r, c) in cells if r == rc[0] and c > rc[1]]
         return (rc[0], min(cands)) if cands else None
 
+    def label_value(label):
+        """ค่าหลังหัวข้อ เช่น "Marking :" อยู่เซลล์ถัดไป หรือบางรายงานอยู่เซลล์เดียวกัน ("Marking :WURTH ...")"""
+        rc = find(lambda k: k == label)
+        if rc:
+            return str(cells.get(right(rc), "")).strip()
+        rc = find(lambda k: k.startswith(label))
+        if not rc:
+            return ""
+        inline = re.sub(r"^\s*" + label + r"\s*:?\s*", "", cells[rc], flags=re.I).strip()
+        return inline or str(cells.get(right(rc), "")).strip()
+
     def num(rc):
         v = cells.get(rc) if rc else None
         return float(v) if isinstance(v, (int, float)) and not isinstance(v, bool) else None
@@ -402,8 +413,8 @@ def parse_report(path):
     rep.pallets = int(p) if p is not None else None
     if rep.pallets is None:
         warn.append("ไม่พบ Total Pallet - กรอก NUMPKG เอง")
-    rep.marking = str(cells.get(right(find(lambda k: k == "MARKING")), "")).strip()
-    rep.customer = str(cells.get(right(find(lambda k: k == "CUSTOMER")), "")).strip()
+    rep.marking = label_value("MARKING")
+    rep.customer = label_value("CUSTOMER")
     return rep
 
 
