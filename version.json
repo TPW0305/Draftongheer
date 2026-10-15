@@ -1,5 +1,5 @@
 {
-  "version": "1.1.4",
-  "notes": "PARTNAME2 เว้นว่างสำหรับรหัสที่ชื่อใน ECS ไม่มีบรรทัด MODEL (เช่น 304 HEX LAG A2  (PT))",
+  "version": "1.1.5",
+  "notes": "PARTNAME2 เว้นว่างเฉพาะ 2THA 304 HEX LAG A2  (PT) เท่านั้น รหัสอื่นใส่บรรทัด MODEL ตามเดิม",
   "files": ["tongheer_invb.py", "tongheer_app.pyw", "DATA_TONGHEER.xlsx", "app.ico"]
 }
