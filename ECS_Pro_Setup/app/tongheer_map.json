@@ -275,6 +275,12 @@
       "partno": "304 HEX LAG A2  (PT)",
       "subgroup": "304 HEX LAG A2",
       "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "304 DIN  931(PT)",
+      "subgroup": "304 DIN (931PT)",
+      "subConfirmed": true
     }
   ],
   "products": [
@@ -493,6 +499,18 @@
       "name": "HEX HEAD LAG SCREW STAINLESS STEEL A2",
       "model": "HEX LAG A2",
       "partno": "304 HEX LAG A2  (PT)"
+    },
+    {
+      "prefix": "1THA",
+      "name": "HEX HEAD LAG SCREWS STAINLESS STEEL A2",
+      "model": "HEX LAG A2",
+      "partno": "304 HEX LAG A2  (AM)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "DIN 931 HEX HEAD SCREW WITH SHANK STAINLESS STEEL A2",
+      "model": "DIN 931 A2",
+      "partno": "304 DIN  931(PT)"
     }
   ],
   "customer_marks": [
