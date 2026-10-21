@@ -15,7 +15,7 @@ import urllib.request
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
 
-VERSION = "1.1.5"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
+VERSION = "1.1.6"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
 # เวอร์ชันล่าสุดอ่านจาก branch main บน GitHub (เครื่องที่ติดตั้งแล้วจะถามอัปเดตเองตอนเปิดโปรแกรม)
 UPDATE_URL = "https://raw.githubusercontent.com/TPW0305/Draftongheer/main/"
 
@@ -327,9 +327,10 @@ def parse_report(path):
     inv_lbl = find(lambda k: k.startswith("INVOICE") and k != "INVOICENO")
     inv_cell = right(inv_lbl)
     if not rep.invoices:
-        m = rx_inv.match(str(cells.get(inv_cell, ""))) if inv_cell else None
-        if m:
-            rep.invoices.append(m.group(1))
+        # ช่อง Invoice# อาจมีหลายใบคั่นด้วยจุลภาค เช่น "1THA2610020,1THA2610021"
+        text = str(cells.get(inv_cell, "")) if inv_cell else ""
+        if re.fullmatch(r"\s*[1-3]THA\d+(\s*[,/&]\s*[1-3]THA\d+)*\s*", text):
+            rep.invoices = re.findall(r"[1-3]THA\d+", text)
         else:
             warn.append("ไม่พบเลขอินวอยในรายงาน - กรอก INV_NO เอง")
 

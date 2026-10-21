@@ -1,5 +1,5 @@
 {
-  "version": "1.1.5",
-  "notes": "PARTNAME2 เว้นว่างเฉพาะ 2THA 304 HEX LAG A2  (PT) เท่านั้น รหัสอื่นใส่บรรทัด MODEL ตามเดิม",
+  "version": "1.1.6",
+  "notes": "อ่านเลขอินวอยหลายใบที่อยู่ในช่อง Invoice# ช่องเดียวได้ (เช่น 1THA2610020,1THA2610021)",
   "files": ["tongheer_invb.py", "tongheer_app.pyw", "DATA_TONGHEER.xlsx", "app.ico"]
 }
