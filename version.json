@@ -1,5 +1,5 @@
 {
-  "version": "1.1.6",
-  "notes": "อ่านเลขอินวอยหลายใบที่อยู่ในช่อง Invoice# ช่องเดียวได้ (เช่น 1THA2610020,1THA2610021)",
+  "version": "1.1.7",
+  "notes": "แก้ INV_DATE และ ETD ที่ถูกอ่านสลับวัน/เดือนให้สอดคล้องกันเอง (อิงเดือนจากเลขอินวอย)",
   "files": ["tongheer_invb.py", "tongheer_app.pyw", "DATA_TONGHEER.xlsx", "app.ico"]
 }

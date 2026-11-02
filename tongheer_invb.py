@@ -15,7 +15,7 @@ import urllib.request
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
 
-VERSION = "1.1.6"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
+VERSION = "1.1.7"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
 # เวอร์ชันล่าสุดอ่านจาก branch main บน GitHub (เครื่องที่ติดตั้งแล้วจะถามอัปเดตเองตอนเปิดโปรแกรม)
 UPDATE_URL = "https://raw.githubusercontent.com/TPW0305/Draftongheer/main/"
 
@@ -361,17 +361,32 @@ def parse_report(path):
     else:
         gap = (rep.etd - rep.date).days
         if gap < 0 or gap > 60:
-            msg = f"INV_DATE {date_text(rep.date)} ไม่สอดคล้องกับ ETD {date_text(rep.etd)}"
-            d = rep.date
-            if d.day <= 12 and d.day != d.month:
-                sw = dt.date(d.year, d.day, d.month)
-                if 0 <= (rep.etd - sw).days <= 60:  # สลับแล้วสอดคล้องกับ ETD: แก้ให้เอง แล้วแจ้งผู้ใช้
-                    rep.date = sw
-                    warn.append(f"INV_DATE ในรายงานเป็น {date_text(d)} สลับวัน/เดือน - แก้ให้เป็น {date_text(sw)} "
-                                f"ตาม ETD {date_text(rep.etd)} (ตรวจอีกครั้งในช่อง INV_DATE)")
-                    msg = None
-            if msg:
-                warn.append(msg + " (ตรวจและแก้ในช่อง INV_DATE)")
+            # วันที่ในรายงานอาจถูกอ่านสลับวัน/เดือน ทั้ง INV_DATE และ ETD: ลองสลับทีละตัวหรือทั้งคู่
+            # เลือกชุดที่ ETD อยู่หลัง INV_DATE 0-60 วัน โดยให้เดือนตรงกับเลขอินวอย (1THA26 11 001 = 11/2026) มาก่อน
+            def variants(d):
+                yield d, False
+                if d.day <= 12 and d.day != d.month:
+                    yield dt.date(d.year, d.day, d.month), True
+
+            m = re.match(r"[1-3]THA(\d{2})(\d{2})", rep.invoices[0]) if rep.invoices else None
+            inv_ym = (int(m.group(1)), int(m.group(2))) if m else None
+            best = None
+            for d, sd in variants(rep.date):
+                for e, se in variants(rep.etd):
+                    if 0 <= (e - d).days <= 60:
+                        score = (inv_ym is not None and (d.year % 100, d.month) != inv_ym, sd + se, (e - d).days)
+                        if best is None or score < best[0]:
+                            best = (score, d, e)
+            if best:
+                old_d, old_e = rep.date, rep.etd
+                rep.date, rep.etd = best[1], best[2]
+                fixed = [f"INV_DATE {date_text(old_d)} → {date_text(rep.date)}"] if rep.date != old_d else []
+                fixed += [f"ETD {date_text(old_e)} → {date_text(rep.etd)}"] if rep.etd != old_e else []
+                warn.append("วันที่ในรายงานถูกอ่านสลับวัน/เดือน - แก้ให้แล้ว: " + ", ".join(fixed)
+                            + " (ตรวจอีกครั้งในช่อง INV_DATE)")
+            else:
+                warn.append(f"INV_DATE {date_text(rep.date)} ไม่สอดคล้องกับ ETD {date_text(rep.etd)}"
+                            " (ตรวจและแก้ในช่อง INV_DATE)")
 
     # --- รายการสินค้า (ตารางส่วนบน ไม่ใช่ตารางสรุปตามอินวอย) ---
     net_h = find(lambda k: k == "NETWEIGHT")
