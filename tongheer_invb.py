@@ -15,7 +15,7 @@ import urllib.request
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
 
-VERSION = "1.1.7"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
+VERSION = "1.1.8"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
 # เวอร์ชันล่าสุดอ่านจาก branch main บน GitHub (เครื่องที่ติดตั้งแล้วจะถามอัปเดตเองตอนเปิดโปรแกรม)
 UPDATE_URL = "https://raw.githubusercontent.com/TPW0305/Draftongheer/main/"
 
@@ -167,8 +167,8 @@ def known_partnos(cfg, prefix):
 
 
 # ---------------- product master (DATA_TONGHEER.xlsx) ----------------
-def load_data(path=DATA_PATH):
-    """คืน [(Code, DecDesc1 แบบ norm, BOINo)] จาก Sheet1 หรือ [] ถ้าไม่มีไฟล์/อ่านไม่ได้"""
+def _data_rows(path):
+    """คืน [(Code, DecDesc1, BOINo)] ดิบจาก Sheet1 หรือ [] ถ้าไม่มีไฟล์/อ่านไม่ได้"""
     if not os.path.exists(path):
         return []
     try:
@@ -176,14 +176,27 @@ def load_data(path=DATA_PATH):
         rows = list(wb.worksheets[0].iter_rows(values_only=True))
         wb.close()
         h = {str(n): i for i, n in enumerate(rows[0]) if n}
-        out = []
-        for r in rows[1:]:
-            code, desc, boi = r[h["Code"]], r[h["DecDesc1"]], r[h["BOINo"]]
-            if code and desc:
-                out.append((str(code), norm(str(desc).replace("_x000D_", " ")), str(boi or "").strip()))
-        return out
+        return [(str(r[h["Code"]]), str(r[h["DecDesc1"]]), str(r[h["BOINo"]] or "").strip())
+                for r in rows[1:] if r[h["Code"]] and r[h["DecDesc1"]]]
     except Exception:
         return []
+
+
+def load_data(path=DATA_PATH):
+    """คืน [(Code, DecDesc1 แบบ norm, BOINo)] จาก Sheet1 หรือ [] ถ้าไม่มีไฟล์/อ่านไม่ได้"""
+    return [(code, norm(desc.replace("_x000D_", " ")), boi) for code, desc, boi in _data_rows(path)]
+
+
+def load_names(path=DATA_PATH):
+    """คืน {Code: ชื่อสินค้าบรรทัดแรกของ DecDesc1} = ชื่อที่ ECS ใช้จริงของแต่ละรหัส"""
+    return {code: re.split(r"_x000D_|[\r\n]", desc)[0].strip() for code, desc, _ in _data_rows(path)}
+
+
+def ecs_partname(names, partno, report_name):
+    """PARTNAME ตามชื่อใน ECS ของรหัสนั้น (รายงาน Tong Heer สะกดไม่คงที่ เช่น SCREW/SCREWS)
+    ถ้าไม่มีใน DATA หรือต่างกันแค่ช่องว่าง ใช้ชื่อจากรายงานเหมือนเดิม"""
+    ecs = names.get(partno)
+    return ecs if ecs and ecs.split() != report_name.split() else report_name
 
 
 def data_candidates(data, boi, name, model_line):
@@ -512,8 +525,10 @@ def permit1_text(base, issue_date=None):
     return "|".join(parts + [date_text(issue_date or dt.date.today())])
 
 
-def write_invb(rep, cfg, out_path, inv_no, inv_date, mark, consignee, pallets, with_price=False, permit_date=None):
+def write_invb(rep, cfg, out_path, inv_no, inv_date, mark, consignee, pallets, with_price=False, permit_date=None,
+               names=None):
     k = cfg["constants"]
+    names = load_names() if names is None else names
     permit1 = permit1_text(k["permit1"], permit_date)
     headers = HEADERS + (["PRICE"] if with_price else [])
     wb = Workbook()
@@ -526,7 +541,7 @@ def write_invb(rep, cfg, out_path, inv_no, inv_date, mark, consignee, pallets, w
         v = {
             "EXP_TAXNO": k["taxno"], "EXP_BRANCH": rep.branch, "INV_NO": inv_no, "INV_DATE": inv_date,
             "INCOTERM": k["incoterm"], "CONSIGNEE": consignee, "ITEM": n, "PDTGROUP": k["pdtgroup"],
-            "PARTNO": it.partno, "PARTNAME": it.name, "PARTNAME2": partname2(rep.prefix, it.partno, it.model_line), "PARTNAMET": k["partnamet"],
+            "PARTNO": it.partno, "PARTNAME": ecs_partname(names, it.partno, it.name), "PARTNAME2": partname2(rep.prefix, it.partno, it.model_line), "PARTNAMET": k["partnamet"],
             "BRAND": k["brand"], "MARK1": mark if n == 1 else "-DO-", "TARIFF": k["tariff"], "SE": k["se"],
             "STATISTIC": k["statistic"], "PRIVILEGE": k["privilege"], "IMPORTTARRIF": k["importtarrif"],
             "QUANTITY": it.net, "QUNIT": k["unit"], "TARIFFQTY": it.net, "TARIFFUNITY": k["unit"], "GROSS": it.gross,
