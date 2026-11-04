@@ -15,7 +15,7 @@ import urllib.request
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
 
-VERSION = "1.1.9"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
+VERSION = "1.1.10"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
 # เวอร์ชันล่าสุดอ่านจาก branch main บน GitHub (เครื่องที่ติดตั้งแล้วจะถามอัปเดตเองตอนเปิดโปรแกรม)
 UPDATE_URL = "https://raw.githubusercontent.com/TPW0305/Draftongheer/main/"
 
@@ -192,10 +192,14 @@ def load_names(path=DATA_PATH):
     return {code: re.split(r"_x000D_|[\r\n]", desc)[0].strip() for code, desc, _ in _data_rows(path)}
 
 
+# ชื่อที่ผู้ใช้กำหนดเองแทนชื่อใน DATA (1THA A4 ให้ใช้ SCREW เหมือน A2)
+PARTNAME_OVERRIDES = {"304 HEX LAG A4 (AM)": "HEX HEAD LAG SCREW STAINLESS STEEL A4"}
+
+
 def ecs_partname(names, partno, report_name):
     """PARTNAME ตามชื่อใน ECS ของรหัสนั้น (รายงาน Tong Heer สะกดไม่คงที่ เช่น SCREW/SCREWS)
     ถ้าไม่มีใน DATA หรือต่างกันแค่ช่องว่าง ใช้ชื่อจากรายงานเหมือนเดิม"""
-    ecs = names.get(partno)
+    ecs = PARTNAME_OVERRIDES.get(partno) or names.get(partno)
     return ecs if ecs and ecs.split() != report_name.split() else report_name
 
 
