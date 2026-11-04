@@ -1,5 +1,5 @@
 {
-  "version": "1.1.8",
-  "notes": "PARTNAME ใช้ชื่อสินค้าตาม ECS (DATA_TONGHEER) ของรหัสนั้น เมื่อรายงานสะกดต่าง เช่น HEX HEAD LAG SCREWS -> SCREW",
+  "version": "1.1.9",
+  "notes": "2THA HEX LAG A4 (316 HEX LAG A4  (PT)) เว้น PARTNAME2 ว่าง ไม่มีบรรทัด MODEL เหมือน A2",
   "files": ["tongheer_invb.py", "tongheer_app.pyw", "DATA_TONGHEER.xlsx", "app.ico"]
 }

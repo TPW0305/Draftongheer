@@ -15,7 +15,7 @@ import urllib.request
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
 
-VERSION = "1.1.8"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
+VERSION = "1.1.9"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
 # เวอร์ชันล่าสุดอ่านจาก branch main บน GitHub (เครื่องที่ติดตั้งแล้วจะถามอัปเดตเองตอนเปิดโปรแกรม)
 UPDATE_URL = "https://raw.githubusercontent.com/TPW0305/Draftongheer/main/"
 
@@ -205,8 +205,8 @@ def data_candidates(data, boi, name, model_line):
     return [code for code, desc, b in data if b == boi and desc == want]
 
 
-# รหัสที่ชื่อใน ECS ไม่มีบรรทัด MODEL จึงเว้น PARTNAME2 ว่าง (ผู้ใช้ยืนยันเฉพาะตัวนี้ของ 2THA เท่านั้น)
-NO_MODEL_PARTNOS = {("2THA", "304 HEX LAG A2  (PT)")}
+# รหัสที่ชื่อใน ECS ไม่มีบรรทัด MODEL จึงเว้น PARTNAME2 ว่าง (ผู้ใช้ยืนยันเฉพาะของ 2THA เท่านั้น)
+NO_MODEL_PARTNOS = {("2THA", "304 HEX LAG A2  (PT)"), ("2THA", "316 HEX LAG A4  (PT)")}
 
 
 def partname2(prefix, partno, model_line):
