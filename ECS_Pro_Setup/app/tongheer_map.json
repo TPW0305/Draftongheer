@@ -70,7 +70,7 @@
     },
     {
       "mark": "PO# J0070512",
-      "code": "KING SOCKET"
+      "code": "KING SOCKE"
     }
   ],
   "partnos": [
@@ -288,6 +288,12 @@
       "prefix": "2THA",
       "partno": "304 DIN  931(PT)",
       "subgroup": "304 DIN (931PT)",
+      "subConfirmed": true
+    },
+    {
+      "prefix": "2THA",
+      "partno": "933 DIN316 (PT)",
+      "subgroup": "931 DIN 316 (PT)",
       "subConfirmed": true
     }
   ],
@@ -519,6 +525,12 @@
       "name": "DIN 931 HEX HEAD SCREW WITH SHANK STAINLESS STEEL A2",
       "model": "DIN 931 A2",
       "partno": "304 DIN  931(PT)"
+    },
+    {
+      "prefix": "2THA",
+      "name": "DIN 933 HEX HEAD CAP SCREWS STAINLESS STEEL A4",
+      "model": "DIN 933 A4",
+      "partno": "933 DIN316 (PT)"
     }
   ],
   "customer_marks": [
