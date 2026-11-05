@@ -1,5 +1,5 @@
 {
-  "version": "1.1.10",
-  "notes": "1THA HEX LAG A4 (304 HEX LAG A4 (AM)) ใช้ชื่อ HEX HEAD LAG SCREW (ไม่มี S) เหมือน A2",
+  "version": "1.1.11",
+  "notes": "CONSIGNEE ตามชื่อลูกค้าได้ (KING SOCKET SCREW CO., LTD. -> KING SOCKE) แม้ Marking เปลี่ยนเป็นเลข PO",
   "files": ["tongheer_invb.py", "tongheer_app.pyw", "DATA_TONGHEER.xlsx", "app.ico"]
 }

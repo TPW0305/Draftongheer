@@ -67,6 +67,10 @@
     {
       "mark": "CAPTAIN'S",
       "code": "CAPTAIN"
+    },
+    {
+      "mark": "PO# J0070512",
+      "code": "KING SOCKET"
     }
   ],
   "partnos": [
@@ -525,6 +529,12 @@
     {
       "customer": "HARDWARE SPECIALTY CO.,INC.",
       "mark": "HARDWARE"
+    }
+  ],
+  "customer_consignees": [
+    {
+      "customer": "KING SOCKET SCREW CO., LTD.",
+      "code": "KING SOCKE"
     }
   ]
 }

@@ -15,7 +15,7 @@ import urllib.request
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
 
-VERSION = "1.1.10"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
+VERSION = "1.1.11"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
 # เวอร์ชันล่าสุดอ่านจาก branch main บน GitHub (เครื่องที่ติดตั้งแล้วจะถามอัปเดตเองตอนเปิดโปรแกรม)
 UPDATE_URL = "https://raw.githubusercontent.com/TPW0305/Draftongheer/main/"
 
@@ -64,6 +64,10 @@ DEFAULT_CFG = {
     "customer_marks": [
         {"customer": "LAWSON PRODUCTS,INC", "mark": "LAWSON"},
         {"customer": "HARDWARE SPECIALTY CO.,INC.", "mark": "HARDWARE"},
+    ],
+    # ลูกค้าที่ Marking เปลี่ยนทุกใบ (เช่นเลข PO) จึงกำหนด CONSIGNEE ตามชื่อลูกค้าแทน
+    "customer_consignees": [
+        {"customer": "KING SOCKET SCREW CO., LTD.", "code": "KING SOCKE"},
     ],
     "partnos": [
         _PN("1THA", "304 HEX (AM)", ok=False), _PN("1THA", "316 HE(AM)", ok=False),
@@ -128,6 +132,11 @@ def load_config():
     if "customer_marks" not in cfg:  # json จากเวอร์ชันก่อน ECS Pro ยังไม่มีกฎ mark ตามลูกค้า
         cfg["customer_marks"] = [dict(c) for c in DEFAULT_CFG["customer_marks"]]
         save_config(cfg)
+    known = {key_of(c["customer"]) for c in cfg.get("customer_consignees", [])}
+    missing = [dict(c) for c in DEFAULT_CFG["customer_consignees"] if key_of(c["customer"]) not in known]
+    if missing:  # เติมกฎ CONSIGNEE ตามลูกค้าที่มากับเวอร์ชันใหม่ ให้เครื่องที่อัปเดตได้ไปด้วย
+        cfg["customer_consignees"] = cfg.get("customer_consignees", []) + missing
+        save_config(cfg)
     return cfg
 
 
@@ -145,6 +154,12 @@ def find_customer_mark(cfg, customer):
     """MARK1 ที่กำหนดตามชื่อลูกค้า (เทียบเฉพาะตัวอักษร/ตัวเลข ไม่สนจุด จุลภาค ช่องว่าง) หรือ "" ถ้าไม่มีกฎ"""
     k = key_of(customer)
     return next((c["mark"] for c in cfg.get("customer_marks", []) if k and key_of(c["customer"]) == k), "")
+
+
+def find_customer_consignee(cfg, customer):
+    """CONSIGNEE ที่กำหนดตามชื่อลูกค้า (เทียบแบบเดียวกับ find_customer_mark) หรือ "" ถ้าไม่มีกฎ"""
+    k = key_of(customer)
+    return next((c["code"] for c in cfg.get("customer_consignees", []) if k and key_of(c["customer"]) == k), "")
 
 
 def find_product(cfg, prefix, name, model):
@@ -487,7 +502,7 @@ def resolve(rep, cfg, data=None):
         rep.marking = cust_mark
     elif not rep.marking:
         warn.append("ไม่พบ Marking ท้ายรายงาน - กรอก MARK1 เอง")
-    rep.consignee = find_consignee(cfg, rep.marking)
+    rep.consignee = find_customer_consignee(cfg, rep.customer) or find_consignee(cfg, rep.marking)
     if rep.marking and not rep.consignee:
         warn.append(f'Marking "{rep.marking}" ยังไม่เคยกำหนด CONSIGNEE - กรอกรหัสตาม ECS (โปรแกรมจะจำไว้)')
     data = load_data() if data is None else data
