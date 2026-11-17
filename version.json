@@ -1,5 +1,5 @@
 {
-  "version": "1.1.11",
-  "notes": "CONSIGNEE ตามชื่อลูกค้าได้ (KING SOCKET SCREW CO., LTD. -> KING SOCKE) แม้ Marking เปลี่ยนเป็นเลข PO",
+  "version": "1.1.12",
+  "notes": "แก้รายการสินค้าไม่แสดงเมื่อเปิดไฟล์ที่มีรายการน้อยต่อจากไฟล์ที่มีหลายรายการ",
   "files": ["tongheer_invb.py", "tongheer_app.pyw", "DATA_TONGHEER.xlsx", "app.ico"]
 }

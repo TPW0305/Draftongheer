@@ -256,6 +256,9 @@ class App(ctk.CTk):
             state = {"auto": it.subgroup}
             pv.trace_add("write", lambda *_, pv=pv, sv=sv, state=state: self._partno_changed(pv, sv, state))
             self.rows.append((it, pv, sv, combo, sub))
+        # กรอบเลื่อนยังค้างตำแหน่งจากไฟล์ก่อนที่มีหลายรายการ ทำให้ไฟล์ที่รายการน้อยดูว่างเปล่า จึงเลื่อนกลับบนสุด
+        self.body.update_idletasks()
+        self.body._parent_canvas.yview_moveto(0)
         self._chips()
         self._set_warn(self._warnings())
         self.btn_gen.configure(state="normal")

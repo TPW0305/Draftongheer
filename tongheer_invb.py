@@ -15,7 +15,7 @@ import urllib.request
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
 
-VERSION = "1.1.11"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
+VERSION = "1.1.12"  # เปลี่ยนเลขนี้พร้อมกับ version.json ทุกครั้งที่ออกเวอร์ชันใหม่
 # เวอร์ชันล่าสุดอ่านจาก branch main บน GitHub (เครื่องที่ติดตั้งแล้วจะถามอัปเดตเองตอนเปิดโปรแกรม)
 UPDATE_URL = "https://raw.githubusercontent.com/TPW0305/Draftongheer/main/"
 
